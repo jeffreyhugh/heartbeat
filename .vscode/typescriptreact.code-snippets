@@ -1,4 +1,9 @@
 {
+  "//eslint-disable-next-line no-console": {
+    "prefix": "nc",
+    "body": ["//eslint-disable-next-line no-console"]
+  },
+
   //#region  //*=========== React ===========
   "import React": {
     "prefix": "ir",
