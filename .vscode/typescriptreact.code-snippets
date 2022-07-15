@@ -3,6 +3,10 @@
     "prefix": "nc",
     "body": ["//eslint-disable-next-line no-console"]
   },
+  "//eslint-disable-next-line @typescript-eslint/no-explicit-any": {
+    "prefix": "nany",
+    "body": ["//eslint-disable-next-line @typescript-eslint/no-explicit-any"]
+  },
 
   //#region  //*=========== React ===========
   "import React": {

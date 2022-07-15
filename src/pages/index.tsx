@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import ButtonLink from '@/components/links/ButtonLink';
@@ -18,6 +19,7 @@ export default function HomePage() {
       <main>
         <section className='bg-white'>
           <div className='layout flex min-h-screen flex-col items-center justify-center text-center'>
+            <Header />
             <Vercel className='text-5xl' />
             <h1 className='mt-4'>
               Next.js + Tailwind CSS + TypeScript Starter

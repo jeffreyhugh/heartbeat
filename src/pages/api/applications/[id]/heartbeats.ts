@@ -29,16 +29,14 @@ export default withApiAuth(async function Route(
 
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const query = await supabaseServerClient({ req, res })
-    .from('applications')
+    .from('heartbeats')
     .select(
-      `id, 
-      created_at, 
-      friendly_name, 
-      last_heartbeat_at, 
-      last_heartbeat_id, 
-      user_id`
+      `id,
+      created_at,
+      body`
     )
-    .limit(100);
+    .eq('application_id', req.query.id)
+    .limit(1);
 
   const data = query.data as Row_Application[];
   const error = query.error;
@@ -48,9 +46,13 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       message: 'Error querying applications',
       error,
     });
+  } else if (data.length === 0) {
+    res.status(404).json({
+      message: 'Application not found',
+    });
   } else {
     res.status(200).json({
-      data,
+      data: data[0],
     });
   }
 }
