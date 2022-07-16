@@ -19,7 +19,10 @@ export default function DashboardHeader() {
   return (
     <header className='absolute top-0 z-50 w-full bg-white'>
       <div className='layout flex h-14 items-center justify-between'>
-        <UnstyledLink href='/' className='font-bold hover:text-gray-600'>
+        <UnstyledLink
+          href='/applications'
+          className='font-bold hover:text-gray-600'
+        >
           <Logo />
         </UnstyledLink>
         <nav>

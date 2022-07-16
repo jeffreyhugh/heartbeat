@@ -163,3 +163,10 @@
   @apply !bg-primary-500;
 }
 /* #endregion  /**======== Datepicker =========== */
+
+.bb-tooltip {
+  @apply overflow-hidden;
+  @apply rounded;
+  @apply border;
+  @apply border-black;
+}
