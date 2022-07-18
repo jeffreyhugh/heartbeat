@@ -188,7 +188,7 @@ export default function Page({
                       </span>
                       <span className='max-w-md select-all break-after-all rounded bg-gray-200 p-2 font-mono'>
                         curl -L -X POST{' '}
-                        {`'https://heartbeat.gg/api/applications/${application.id}/ingest' -H 'Authorization: Bearer YOUR_APP_SECRET_HERE'`}
+                        {`'${location.origin}/api/applications/${application.id}/ingest' -H 'Authorization: Bearer YOUR_APP_SECRET_HERE'`}
                       </span>
                     </div>
                   </>
