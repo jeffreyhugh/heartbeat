@@ -1,9 +1,7 @@
 import { supabaseClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import toast, { useToasterStore } from 'react-hot-toast';
-
-import { toastDefaults } from '@/lib/toastDefaults';
 
 import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
@@ -12,8 +10,8 @@ import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
 
 export default function LoginPage() {
-  const { toasts } = useToasterStore();
-  const isLoading = toasts.some((toast) => toast.type === 'loading');
+  // const { toasts } = useToasterStore();
+  // const isLoading = toasts.some((toast) => toast.type === 'loading');
 
   const methods = useForm({
     mode: 'onTouched',
@@ -21,17 +19,30 @@ export default function LoginPage() {
 
   const { handleSubmit } = methods;
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const router = useRouter();
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = (data: any) => {
-    toast.promise(
-      supabaseClient.auth.signIn({
-        email: data.email,
-      }),
-      {
-        ...toastDefaults,
-        success: 'Check your email for a login link',
-      }
-    );
+  const onSubmit = async (data: any) => {
+    // toast.promise(
+    //   supabaseClient.auth.signIn({
+    //     email: data.email,
+    //   }),
+    //   {
+    //     ...toastDefaults,
+    //     success: 'Check your email for a login link',
+    //   }
+    // );
+    setIsLoading(true);
+
+    await supabaseClient.auth.signIn({
+      email: data.email,
+    });
+
+    setIsLoading(false);
+
+    router.push('/login/success');
   };
 
   return (
@@ -45,7 +56,7 @@ export default function LoginPage() {
               <FormProvider {...methods}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className='max-w-sm space-y-3'
+                  className='max-w-md space-y-3'
                 >
                   <Input
                     type='email'
@@ -61,7 +72,7 @@ export default function LoginPage() {
                     className='flex w-full justify-center'
                     isLoading={isLoading}
                   >
-                    Login with Email
+                    Login with email
                   </Button>
                   <div className='border-t' />
                   <ButtonLink
@@ -69,7 +80,7 @@ export default function LoginPage() {
                     href='/'
                     className='flex w-full justify-center'
                   >
-                    Back Home
+                    Back home
                   </ButtonLink>
                 </form>
               </FormProvider>

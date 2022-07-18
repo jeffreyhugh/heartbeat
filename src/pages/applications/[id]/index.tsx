@@ -1,5 +1,4 @@
 import {
-  SupabaseClient,
   supabaseClient,
   supabaseServerClient,
   withPageAuth,
@@ -14,6 +13,7 @@ import { Row_Application, Row_Heartbeat } from '@/lib/db';
 
 import ApplicationsHeader from '@/components/applications/ApplicationsHeader';
 import Button from '@/components/buttons/Button';
+import DatePicker from '@/components/forms/DatePicker';
 import Input from '@/components/forms/Input';
 import Layout from '@/components/layout/Layout';
 import Loader from '@/components/Loader';
@@ -29,6 +29,7 @@ const AXIS_OPTIONS = {
     tick: {
       stepSize: 60,
     },
+    label: 'Seconds',
   },
   x: {
     tick: {
@@ -39,7 +40,20 @@ const AXIS_OPTIONS = {
     },
     padding: {
       left: 0,
+      right: 0,
     },
+  },
+  y2: {
+    show: true,
+    max: 1.0,
+    min: 0.0,
+    padding: {
+      bottom: 0,
+    },
+    tick: {
+      stepSize: 0.2,
+    },
+    label: 'Health',
   },
 };
 
@@ -76,13 +90,9 @@ export default function Page({
 
   const { data: graphHeartbeats, error: graphHeartbeatsError } = useSWR<
     Row_Heartbeat[]
-  >(
-    application.id,
-    (applicationID) => graphFetcher(applicationID, supabaseClient),
-    {
-      refreshInterval: 5000,
-    }
-  );
+  >(application.id, (applicationID) => graphFetcher(applicationID), {
+    refreshInterval: 5000,
+  });
 
   const [queryIsLoading, setQueryIsLoading] = React.useState(false);
 
@@ -158,7 +168,7 @@ export default function Page({
             <div className='flex w-full flex-col items-center'>
               <ApplicationsHeader />
               <span className='text-2xl font-bold'>
-                {application.friendly_name}
+                {application.emoji} {application.friendly_name}
               </span>
 
               <div className='mt-6 w-full border-t' />
@@ -178,7 +188,7 @@ export default function Page({
                       </span>
                       <span className='max-w-md select-all break-after-all rounded bg-gray-200 p-2 font-mono'>
                         curl -L -X POST{' '}
-                        {`'https://heartbeat.gg/api/applications/${application.id}/ingest' -H 'Authorization: Bearer ${application.secret}'`}
+                        {`'https://heartbeat.gg/api/applications/${application.id}/ingest' -H 'Authorization: Bearer YOUR_APP_SECRET_HERE'`}
                       </span>
                     </div>
                   </>
@@ -240,12 +250,14 @@ const HeartbeatsTable = ({ heartbeats }: { heartbeats: Row_Heartbeat[] }) => {
           <colgroup>
             <col className='w-auto' />
             <col className='w-auto' />
+            <col className='w-auto' />
             <col className='w-1/2' />
           </colgroup>
           <thead className='m-2'>
             <tr className='' style={{ backgroundColor: '#b2b2b2' }}>
               <th>Time</th>
               <th className='border-x border-black'>ID</th>
+              <th className='border-r border-dotted border-black'>Health</th>
               <th>Body</th>
             </tr>
           </thead>
@@ -256,7 +268,7 @@ const HeartbeatsTable = ({ heartbeats }: { heartbeats: Row_Heartbeat[] }) => {
                 className='border-collapse border-y border-gray-200 hover:bg-gray-200'
               >
                 <td className='font-light'>
-                  <span className='ml-1'>
+                  <span className='mx-1'>
                     {DateTime.fromISO(heartbeat.created_at).toFormat(
                       // July 1st 2020 at 11:00:00 PM
                       'LLLL d yyyy hh:mm:ss a'
@@ -264,12 +276,17 @@ const HeartbeatsTable = ({ heartbeats }: { heartbeats: Row_Heartbeat[] }) => {
                   </span>
                 </td>
                 <td className='border-x border-dotted border-gray-600'>
-                  <span className='ml-1 select-all font-mono'>
+                  <span className='mx-1 select-all font-mono'>
                     {heartbeat.id}
                   </span>
                 </td>
+                <td className='border-r border-dotted border-gray-600'>
+                  <span className='mx-1 font-light'>
+                    {heartbeat.health.toFixed(4)}
+                  </span>
+                </td>
                 <td>
-                  <span className='ml-1 select-all break-after-all font-mono'>
+                  <span className='mx-1 select-all break-after-all font-mono'>
                     {heartbeat.body || '<empty>'}
                   </span>
                 </td>
@@ -305,11 +322,18 @@ const HeartbeatsQueryForm = ({
       onSubmit={handleSubmit(onSubmit)}
       className='flex flex-col flex-nowrap space-y-2 md:flex-row md:space-x-2 md:space-y-0'
     >
-      <Input
+      {/* <Input
         id='heartbeatsBefore'
         label='Heartbeats before'
         validation={{}}
         type='datetime-local'
+      /> */}
+      <DatePicker
+        id='heartbeatsBefore'
+        label='Heartbeats before'
+        validation={{}}
+        showTimeSelect
+        timeIntervals={15}
       />
       <Input
         id='heartbeatsLimit'
@@ -329,7 +353,11 @@ const HeartbeatsQueryForm = ({
         validation={{}}
       />
       <div className='flex flex-col justify-end'>
-        <Button type='submit' isLoading={queryIsLoading} className='h-11'>
+        <Button
+          type='submit'
+          isLoading={queryIsLoading}
+          className='flex h-11 justify-center'
+        >
           Run query
         </Button>
         <div className='mt-1' />
@@ -339,7 +367,7 @@ const HeartbeatsQueryForm = ({
           type='reset'
           variant='outline'
           isLoading={queryIsLoading}
-          className='h-11 text-center'
+          className='flex h-11 justify-center'
           onClick={() => {
             setTableHeartbeats([]);
           }}
@@ -358,7 +386,8 @@ export const getServerSideProps = withPageAuth({
     const { data, error } = await supabaseServerClient(ctx)
       .from('applications')
       .select('*')
-      .eq('id', ctx.query.id);
+      .eq('id', ctx.query.id)
+      .order('last_heartbeat_at', { ascending: true });
 
     if (!data || data.length === 0) {
       return {
@@ -377,8 +406,8 @@ export const getServerSideProps = withPageAuth({
       };
     } else {
       const application = data[0] as Row_Application;
-      // TODO block out application secret?
-      // application.secret = '';
+      // block out application secret hash
+      application.secret = '';
 
       return {
         props: {
@@ -392,20 +421,36 @@ export const getServerSideProps = withPageAuth({
 
 const make_chart_data = (heartbeats: Row_Heartbeat[]) => {
   const CHART_DATA = {
-    columns: [['Time since last heartbeat (seconds)'], ['Average']],
+    columns: [
+      ['Time since last heartbeat'],
+      ['Average TSLH'],
+      ['Health'],
+      ['Average Health'],
+    ],
     types: {
-      'Time since last heartbeat (seconds)': 'area-spline',
-      Average: 'line',
+      'Time since last heartbeat': 'area-spline',
+      'Average TSLH': 'line',
+      Health: 'area-spline',
+      'Average Health': 'line',
     },
     colors: {
-      'Time since last heartbeat (seconds)': '#ff0000',
-      Average: '#454545',
+      'Time since last heartbeat': '#f87171', // red-400
+      'Average TSLH': '#dc2626', // red-600
+      Health: '#a78bfa', // violet-400
+      'Average Health': '#7c3aed', // violet-600
+    },
+    axes: {
+      'Time since last heartbeat': 'y',
+      'Average TSLH': 'y',
+      Health: 'y2',
+      'Average Health': 'y2',
     },
   };
 
   if (!heartbeats) return CHART_DATA;
 
-  let sum = 0;
+  let timeSinceLastSum = 0;
+  let healthSum = 0;
   if (heartbeats.length > 0) {
     for (let index = heartbeats.length - 1; index > 0; index--) {
       const timeSinceLast = Math.abs(
@@ -414,22 +459,30 @@ const make_chart_data = (heartbeats: Row_Heartbeat[]) => {
           .as('seconds')
       );
       CHART_DATA.columns[0].push(timeSinceLast.toFixed(0));
-      sum += timeSinceLast;
+      CHART_DATA.columns[2].push(heartbeats[index].health.toFixed(2));
+      timeSinceLastSum += timeSinceLast;
+      healthSum += heartbeats[index].health;
     }
   } else {
     CHART_DATA.columns[0].push('0');
+    CHART_DATA.columns[2].push('0');
   }
 
   for (let index = 1; index < CHART_DATA.columns[0].length; index++) {
-    CHART_DATA.columns[1].push((sum / CHART_DATA.columns[0].length).toFixed(0));
+    CHART_DATA.columns[1].push(
+      (timeSinceLastSum / (CHART_DATA.columns[0].length - 1)).toFixed(0)
+    );
+    CHART_DATA.columns[3].push(
+      (healthSum / (CHART_DATA.columns[0].length - 1)).toFixed(2)
+    );
   }
 
   return CHART_DATA;
 };
 
 const graphFetcher = async (
-  applicationID: string,
-  supabaseClient: SupabaseClient
+  applicationID: string
+  // supabaseClient: SupabaseClient
 ) => {
   const { data, error } = await supabaseClient
     .from('heartbeats')

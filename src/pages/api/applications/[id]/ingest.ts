@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import bcrypt from 'bcrypt';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { MAX_BODY_SIZE } from '@/lib/const';
@@ -26,6 +27,11 @@ export default async function Route(req: NextApiRequest, res: NextApiResponse) {
         error: 'not_authorized',
         description: 'Invalid or missing `Authorization` header',
       });
+    case 403:
+      return res.status(validation.statusCode).json({
+        error: 'not_authorized',
+        description: 'Invalid or missing `Authorization` header',
+      });
     case 500:
       return res.status(validation.statusCode).json({
         error: 'internal_error',
@@ -39,11 +45,18 @@ export default async function Route(req: NextApiRequest, res: NextApiResponse) {
       ? req.body.slice(0, MAX_BODY_SIZE) + '[...]'
       : req.body;
 
+  // health should be a number between 0.0 and 1.0
+  let health = Number(req.query.health);
+  if (isNaN(health) || health < 0 || health > 1) {
+    health = 1.0;
+  }
+
   const query = await supabase.from('heartbeats').insert({
     application_id: appID,
     created_at: new Date().toISOString(),
     body: body,
     user_id: validation.userID,
+    health: health,
   } as Row_Heartbeat);
   const data = query.data as Row_Heartbeat[];
 
@@ -59,6 +72,7 @@ export default async function Route(req: NextApiRequest, res: NextApiResponse) {
     .update({
       last_heartbeat_at: data[0].created_at,
       last_heartbeat_id: data[0].id,
+      last_heartbeat_health: data[0].health,
     } as Row_Application)
     .eq('id', appID);
 
@@ -103,7 +117,6 @@ async function isValidToken(
     .from('applications')
     .select('*')
     .eq('id', appID)
-    .eq('secret', bearerToken)
     .limit(1);
   const data = query.data as Row_Application[];
   const error = query.error;
@@ -118,6 +131,21 @@ async function isValidToken(
   if (data.length === 0) {
     return {
       statusCode: 401,
+      userID: '',
+    };
+  }
+
+  if (data.length === 0) {
+    return {
+      statusCode: 404,
+      userID: '',
+    };
+  }
+  const match = await bcrypt.compare(bearerToken, data[0].secret);
+
+  if (!match) {
+    return {
+      statusCode: 403,
       userID: '',
     };
   }

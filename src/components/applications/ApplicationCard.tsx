@@ -18,6 +18,7 @@ export default function ApplicationCard({ item }: { item: Row_Application }) {
         <div className='flex items-center pr-4 text-2xl'>
           {/* {health[healthIndex > 5 ? 5 : healthIndex < 0 ? 0 : healthIndex]} */}
           {/* TODO add emoji for each project */}
+          {item.emoji}
         </div>
         <div className='flex flex-grow flex-col'>
           <div className='text-xl font-bold'>{item.friendly_name}</div>

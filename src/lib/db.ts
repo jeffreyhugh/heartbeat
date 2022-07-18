@@ -4,7 +4,7 @@ export interface Row_Heartbeat {
   application_id: string; // FK -> applications.id
   body?: string;
   user_id: string; // FK -> users.id
-  // health: 0 | 1 | 2 | 3 | 4 | 5;
+  health: number; // 0.0-1.0
 }
 
 export interface Row_Application {
@@ -15,4 +15,6 @@ export interface Row_Application {
   last_heartbeat_id: string; // FK -> heartbeats.id
   last_heartbeat_at: string;
   user_id: string; // FK -> users.id
+  last_heartbeat_health: number; // 0.0-1.0
+  emoji: string;
 }
