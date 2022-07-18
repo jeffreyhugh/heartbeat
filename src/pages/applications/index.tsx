@@ -117,7 +117,10 @@ const CardCollection = ({ data }: { data: Row_Application[] }) => {
 };
 
 const fetcher = async () => {
-  const { data, error } = await supabaseClient.from('applications').select('*');
+  const { data, error } = await supabaseClient
+    .from('applications')
+    .select('*')
+    .is('deleted_at', null);
 
   if (error) {
     //eslint-disable-next-line no-console

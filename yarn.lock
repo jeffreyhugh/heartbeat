@@ -1957,13 +1957,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/emoji-mart@^3.0.9":
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/@types/emoji-mart/-/emoji-mart-3.0.9.tgz#2f7ef5d9ec194f28029c46c81a5fc1e5b0efa73c"
-  integrity sha512-qdBo/2Y8MXaJ/2spKjDZocuq79GpnOhkwMHnK2GnVFa8WYFgfA+ei6sil3aeWQPCreOKIx9ogPpR5+7MaOqYAA==
-  dependencies:
-    "@types/react" "*"
-
 "@types/feather-icons@^4.7.0":
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/@types/feather-icons/-/feather-icons-4.7.0.tgz#ec66bc046bcd1513835f87541ecef54b50c57ec9"

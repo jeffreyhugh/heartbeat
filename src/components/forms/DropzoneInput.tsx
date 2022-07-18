@@ -48,7 +48,9 @@ export default function DropzoneInput({
   );
 
   const onDrop = React.useCallback(
-    (acceptedFiles, rejectedFiles) => {
+    // TODO fix upstream repo
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (acceptedFiles: any, rejectedFiles: any) => {
       if (rejectedFiles && rejectedFiles.length > 0) {
         setValue(id, files ? [...files] : null);
         setError(id, {

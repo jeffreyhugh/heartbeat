@@ -386,6 +386,7 @@ export const getServerSideProps = withPageAuth({
     const { data, error } = await supabaseServerClient(ctx)
       .from('applications')
       .select('*')
+      .is('deleted_at', null)
       .eq('id', ctx.query.id)
       .order('last_heartbeat_at', { ascending: true });
 

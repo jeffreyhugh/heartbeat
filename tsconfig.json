@@ -19,7 +19,6 @@
       "~/*": ["./public/*"]
     },
     "incremental": true,
-    "downlevelIteration": true,
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/forms/EmojiPicker.tsx"],
   "exclude": ["node_modules"],
