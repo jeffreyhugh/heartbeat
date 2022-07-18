@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import * as React from 'react';
-import { useDropzone } from 'react-dropzone';
+import { Accept, useDropzone } from 'react-dropzone';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import FilePreview from '@/components/forms/FilePreview';
@@ -8,7 +8,7 @@ import FilePreview from '@/components/forms/FilePreview';
 import { FileWithPreview } from '@/types/dropzone';
 
 type DropzoneInputProps = {
-  accept?: string;
+  accept?: Accept;
   helperText?: string;
   id: string;
   label: string;
