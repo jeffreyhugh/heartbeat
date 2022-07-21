@@ -84,5 +84,6 @@
     "src/**/*.{json,css,scss,md}": [
       "prettier -w"
     ]
-  }
+  },
+  "packageManager": "yarn@3.2.1"
 }

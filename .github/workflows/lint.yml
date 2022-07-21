@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: "14"
           cache: "yarn"
-      # - run: yarn set version berry
+      - run: yarn set version berry
       - run: yarn
       - run: yarn typecheck
 
