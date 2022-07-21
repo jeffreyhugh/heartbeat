@@ -1,4 +1,4 @@
-import { ImSpinner8 } from 'react-icons/im';
+import { ImSpinner2 } from 'react-icons/im';
 
 export default function Loader() {
   return (
@@ -8,6 +8,6 @@ export default function Loader() {
     //   width={96}
     //   height={96}
     // />
-    <ImSpinner8 className='animate-spin' />
+    <ImSpinner2 className='animate-spin' />
   );
 }

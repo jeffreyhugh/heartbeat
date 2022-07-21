@@ -9,6 +9,7 @@ enum ButtonVariant {
   'ghost',
   'light',
   'dark',
+  'gradient',
 }
 
 type ButtonProps = {
@@ -75,6 +76,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               'bg-gray-900 text-white',
               'border border-gray-600',
               'hover:bg-gray-800 active:bg-gray-700 disabled:bg-gray-700',
+            ],
+            variant === 'gradient' && [
+              'bg-gradient-to-br from-primary-500 to-red-500 text-white',
+              'border-0 border-transparent',
+              'hover:from-primary-600 hover:to-red-600 hover:text-white',
+              'active:from-primary-500 active:to-red-500',
+              'disabled:from-primary-400 disabled:to-red-400 disabled:hover:from-primary-400 disabled:hover:to-red-400',
             ],
           ],
           //#endregion  //*======== Variants ===========

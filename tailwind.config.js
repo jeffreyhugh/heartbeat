@@ -32,6 +32,19 @@ module.exports = {
           800: withOpacityValue('--tw-color-primary-800'),
           900: withOpacityValue('--tw-color-primary-900'),
         },
+        secondary: {
+          // Customize it on globals.css :root
+          50: withOpacityValue('--tw-color-secondary-50'),
+          100: withOpacityValue('--tw-color-secondary-100'),
+          200: withOpacityValue('--tw-color-secondary-200'),
+          300: withOpacityValue('--tw-color-secondary-300'),
+          400: withOpacityValue('--tw-color-secondary-400'),
+          500: withOpacityValue('--tw-color-secondary-500'),
+          600: withOpacityValue('--tw-color-secondary-600'),
+          700: withOpacityValue('--tw-color-secondary-700'),
+          800: withOpacityValue('--tw-color-secondary-800'),
+          900: withOpacityValue('--tw-color-secondary-900'),
+        },
         dark: '#222222',
       },
       keyframes: {

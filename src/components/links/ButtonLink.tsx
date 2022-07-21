@@ -12,6 +12,7 @@ enum ButtonVariant {
   'ghost',
   'light',
   'dark',
+  'gradient',
 }
 
 type ButtonLinkProps = {
@@ -66,6 +67,13 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
               'bg-gray-900 text-white',
               'border border-gray-600',
               'hover:bg-gray-800 active:bg-gray-700 disabled:bg-gray-700',
+            ],
+            variant === 'gradient' && [
+              'bg-gradient-to-br from-primary-500 to-secondary-500 text-white',
+              'border-0 border-transparent',
+              'hover:from-primary-600 hover:to-secondary-600 hover:text-white',
+              'active:from-primary-500 active:to-secondary-500',
+              'disabled:from-primary-400 disabled:to-secondary-400 disabled:hover:from-primary-400 disabled:hover:to-secondary-400',
             ],
           ],
           //#endregion  //*======== Variants ===========

@@ -53,7 +53,7 @@ export default function Page() {
                 <ArrowLink
                   as={ButtonLink}
                   href='/applications/new'
-                  variant='primary'
+                  variant='gradient'
                 >
                   New application
                 </ArrowLink>

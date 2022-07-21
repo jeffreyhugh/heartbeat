@@ -72,7 +72,9 @@ export default function DatePicker({
                 showYearDropdown
                 dropdownMode='select'
                 openToDate={value ? new Date(value) : defaultDate}
-                dateFormat='dd/MM/yyyy'
+                dateFormat={
+                  rest.showTimeSelect ? 'MM/dd/yyyy HH:MM' : 'MM/dd/yyyy'
+                }
                 readOnly={readOnly}
                 {...rest}
               />
