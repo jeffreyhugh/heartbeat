@@ -39,5 +39,5 @@ sitemap.xml
 sitemap-*.xml
 
 # yarn
-.yarn
+/.yarn/
 .yarnrc.yml
