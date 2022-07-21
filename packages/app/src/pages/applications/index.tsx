@@ -120,7 +120,8 @@ const fetcher = async () => {
   const { data, error } = await supabaseClient
     .from('applications')
     .select('*')
-    .is('deleted_at', null);
+    .is('deleted_at', null)
+    .order('last_heartbeat_at', { ascending: false });
 
   if (error) {
     //eslint-disable-next-line no-console
