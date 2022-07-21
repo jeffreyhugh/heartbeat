@@ -25,5 +25,9 @@
     "app:push-release": "yarn workspace app push-release",
     "app:postbuild": "yarn workspace app postbuild",
     "app:prepare": "yarn workspace app prepare"
-  }
+  },
+  "engines": {
+    "yarn": "@3.2.1"
+  },
+  "packageManager": "yarn@3.2.1"
 }
