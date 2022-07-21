@@ -3,5 +3,5 @@
 
 cd packages/app
 # npx lint-staged
-yarn format
-yarn typecheck
+# yarn format
+# yarn typecheck
